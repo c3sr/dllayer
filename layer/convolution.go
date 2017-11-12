@@ -44,8 +44,6 @@ func (c *Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInf
 	wIn := inputDimensions[2]
 	hIn := inputDimensions[3]
 
-	_, _, _, _ = nIn, cIn, hIn, wIn
-
 	batchOut := nIn
 
 	kernelW := c.Dilation*(c.KernelW-1) + 1
@@ -55,7 +53,7 @@ func (c *Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInf
 	cOut := int64(c.NumOutput)
 
 	flops := dllayer.FlopsInformation{
-		MultiplyAdds: (int64(c.KernelW*c.KernelH) * (wOut * hOut) * cIn * cOut * batchOut) / int64(c.Group),
+		MultiplyAdds: (int64(c.KernelW*c.KernelH) * (wIn * hIn) * cIn * cOut * batchOut) / int64(c.Group),
 	}
 
 	return &Information{
