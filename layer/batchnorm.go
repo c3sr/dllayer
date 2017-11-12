@@ -4,30 +4,32 @@ import (
 	"github.com/rai-project/dllayer"
 )
 
-type Dropout struct {
+type BatchNorm struct {
 	Base
 }
 
-func (Dropout) Type() string {
-	return "Dropout"
+func (BatchNorm) Type() string {
+	return "BatchNorm"
 }
 
-func (Dropout) Aliases() []string {
-	return []string{"dropout"}
+func (BatchNorm) Aliases() []string {
+	return []string{"batchnorm", "bn"}
 }
 
-func (Dropout) Description() string {
+func (BatchNorm) Description() string {
 	return ``
 }
 
-func (c *Dropout) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
+func (c *BatchNorm) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 	nIn := inputDimensions[0]
 	cIn := inputDimensions[1]
 	wIn := inputDimensions[2]
 	hIn := inputDimensions[3]
 
+	numOps := wIn * hIn * cIn * nIn
 	flops := dllayer.FlopsInformation{
-		Comparisons: wIn * hIn * cIn * nIn,
+		Additions: numOps,
+		Divisions: numOps,
 	}
 
 	return &Information{
@@ -40,5 +42,5 @@ func (c *Dropout) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 }
 
 func init() {
-	dllayer.Register(&Dropout{})
+	dllayer.Register(&BatchNorm{})
 }

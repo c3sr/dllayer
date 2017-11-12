@@ -52,7 +52,7 @@ func (c *Pooling) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 	if c.Global {
 		numOps = wIn * hIn * cIn * batchOut
 	} else {
-		numOps = wOut * hOut * int64(c.KernelH) * int64(c.KernelW) * cOut * batchOut
+		numOps = wOut * hOut * int64(c.KernelH) * int64(c.KernelW) * cIn * batchOut
 	}
 
 	flops := dllayer.FlopsInformation{}

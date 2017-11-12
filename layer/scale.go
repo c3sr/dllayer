@@ -4,30 +4,30 @@ import (
 	"github.com/rai-project/dllayer"
 )
 
-type Dropout struct {
+type Scale struct {
 	Base
 }
 
-func (Dropout) Type() string {
-	return "Dropout"
+func (Scale) Type() string {
+	return "Scale"
 }
 
-func (Dropout) Aliases() []string {
-	return []string{"dropout"}
+func (Scale) Aliases() []string {
+	return []string{"scale"}
 }
 
-func (Dropout) Description() string {
+func (Scale) Description() string {
 	return ``
 }
 
-func (c *Dropout) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
+func (c *Scale) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 	nIn := inputDimensions[0]
 	cIn := inputDimensions[1]
 	wIn := inputDimensions[2]
 	hIn := inputDimensions[3]
 
 	flops := dllayer.FlopsInformation{
-		Comparisons: wIn * hIn * cIn * nIn,
+		MultiplyAdds: wIn * hIn * cIn * nIn,
 	}
 
 	return &Information{
@@ -40,5 +40,5 @@ func (c *Dropout) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 }
 
 func init() {
-	dllayer.Register(&Dropout{})
+	dllayer.Register(&Scale{})
 }
