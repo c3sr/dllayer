@@ -149,8 +149,14 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 			pp.Println("failed to create ", name)
 			return nil
 		}
-		if len(lyr.Bottom) == 1 {
+		if len(lyr.Bottom) == 0 {
+			// nothing .. this is the root layer
+		} else if len(lyr.Bottom) == 1 {
 			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
+		} else if strings.ToLower(lyr.Type) != "concat" {
+			log.WithField("layer_type", lyr.Type).
+				WithField("layer", lyr).
+				Error("unhandeled to input dimension computation")
 		}
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
@@ -193,8 +199,14 @@ func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo 
 			pp.Println("failed to create ", name)
 			return nil
 		}
-		if len(lyr.Bottom) == 1 {
+		if len(lyr.Bottom) == 0 {
+			// nothing .. this is the root layer
+		} else if len(lyr.Bottom) == 1 {
 			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
+		} else if strings.ToLower(lyr.Type.String()) != "concat" {
+			log.WithField("layer_type", lyr.Type).
+				WithField("layer", lyr).
+				Error("unhandeled to input dimension computation")
 		}
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
