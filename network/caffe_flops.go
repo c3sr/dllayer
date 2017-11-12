@@ -141,7 +141,7 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		return nil
 	}
 
-	infos := []dllayer.LayerInfo{}
+	infos := map[string]dllayer.LayerInfo{}
 	for _, name := range topSort {
 		lyr := c.layers[name]
 		layer := c.mkLayer(lyr)
@@ -149,13 +149,21 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 			pp.Println("failed to create ", name)
 			return nil
 		}
+		if len(lyr.Bottom) == 1 {
+			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
+		}
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
-		infos = append(infos, info)
-		pp.Println(name, " ", info.OutputDimensions()[1])
-		inputDimensions = info.OutputDimensions()
+		infos[name] = info
 	}
-	return infos
+	vals := func(kv map[string]dllayer.LayerInfo) []dllayer.LayerInfo {
+		res := []dllayer.LayerInfo{}
+		for _, v := range kv {
+			res = append(res, v)
+		}
+		return res
+	}
+	return vals(infos)
 }
 
 func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo {
@@ -177,19 +185,29 @@ func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo 
 		return nil
 	}
 
-	infos := []dllayer.LayerInfo{}
+	infos := map[string]dllayer.LayerInfo{}
 	for _, name := range topSort {
 		lyr := c.v1layers[name]
 		layer := c.mkv1Layer(lyr)
 		if layer == nil {
+			pp.Println("failed to create ", name)
 			return nil
+		}
+		if len(lyr.Bottom) == 1 {
+			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
 		}
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
-		infos = append(infos, info)
-		inputDimensions = info.OutputDimensions()
+		infos[name] = info
 	}
-	return infos
+	vals := func(kv map[string]dllayer.LayerInfo) []dllayer.LayerInfo {
+		res := []dllayer.LayerInfo{}
+		for _, v := range kv {
+			res = append(res, v)
+		}
+		return res
+	}
+	return vals(infos)
 }
 
 func (c Caffe) LayerInformations() []dllayer.LayerInfo {
@@ -224,8 +242,7 @@ func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
 	case "input":
 		layer = mkInput(lyr.InputParam)
 	case "data":
-		data := lyr.DataParam
-		pp.Println(data)
+		layer = mkData(lyr.InputParam)
 	case "convolution":
 		layer = mkConv(lyr.ConvolutionParam)
 	case "relu":
@@ -335,6 +352,16 @@ func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
 func mkInput(param *caffe.InputParameter) dllayer.Layer {
 	inputDimensions := toInt64Slice(param.Shape[0].Dim)
 	return &layer.Input{
+		N: inputDimensions[0],
+		C: inputDimensions[1],
+		W: inputDimensions[2],
+		H: inputDimensions[3],
+	}
+}
+
+func mkData(param *caffe.InputParameter) dllayer.Layer {
+	inputDimensions := toInt64Slice(param.Shape[0].Dim)
+	return &layer.Data{
 		N: inputDimensions[0],
 		C: inputDimensions[1],
 		W: inputDimensions[2],

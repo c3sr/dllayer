@@ -16,7 +16,8 @@ func TestCaffeReader(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEmpty(t, net)
 
-	pp.Println(net.FlopsInformation())
+	info := net.FlopsInformation()
+	pp.Println(info)
 	// pp.Println(net.LayerInformations())
 
 	// net.Layer = nil
