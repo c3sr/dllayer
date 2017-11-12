@@ -25,11 +25,13 @@ func (Input) Description() string {
 }
 
 func (c *Input) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
+	batchSize := c.N
+	batchSize = 1
 	return &Information{
 		name:             c.name,
 		typ:              c.Type(),
-		inputDimensions:  []int64{c.N, c.C, c.W, c.H},
-		outputDimensions: []int64{c.N, c.C, c.W, c.H},
+		inputDimensions:  []int64{batchSize, c.C, c.W, c.H},
+		outputDimensions: []int64{batchSize, c.C, c.W, c.H},
 	}
 }
 

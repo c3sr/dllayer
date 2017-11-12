@@ -183,6 +183,9 @@ func (c Caffe) LayerInformations() []dllayer.LayerInfo {
 		inputDimensions = toInt64Slice(c.InputShape[0].Dim)
 	}
 
+	if inputDimensions != nil {
+		inputDimensions[0] = 1
+	}
 	if len(c.layers) != 0 {
 		return c.layerInformations(inputDimensions)
 	}
