@@ -11,12 +11,13 @@ import (
 
 func TestCaffeReader(t *testing.T) {
 	cwd := sourcepath.MustAbsoluteDir()
-	resnet101ProtoTxtPath := filepath.Join(cwd, "..", "assets", "model_graph", "alexnet.prototxt")
+	resnet101ProtoTxtPath := filepath.Join(cwd, "..", "assets", "model_graph", "squeezenet_1.0.prototxt")
 	net, err := NewCaffe(resnet101ProtoTxtPath)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, net)
 
 	pp.Println(net.FlopsInformation())
+	// pp.Println(net.LayerInformations())
 
 	// net.Layer = nil
 	// net.Layers = nil

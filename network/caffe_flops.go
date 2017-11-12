@@ -4,10 +4,13 @@ import (
 	"strings"
 
 	"github.com/k0kubun/pp"
+	toposort "github.com/philopon/go-toposort"
 	"github.com/rai-project/caffe"
 	"github.com/rai-project/dllayer"
 	"github.com/rai-project/dllayer/layer"
 )
+
+// See http://caffe.berkeleyvision.org/tutorial/layers.html
 
 func kernelSizeOf(v uint32, size []uint32) uint32 {
 	if v != 0 {
@@ -118,65 +121,43 @@ func (c Caffe) MemoryInformation() dllayer.MemoryInformation {
 	return mem
 }
 
-func (c Caffe) LayerInformations() []dllayer.LayerInfo {
-	infos := []dllayer.LayerInfo{}
+func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 
-	var inputDimensions []int64 = nil
-	if len(c.InputDim) != 0 {
-		inputDimensions = toInt64Slice(c.InputDim)
-	} else if len(c.InputShape) != 0 &&
-		c.InputShape[0] != nil &&
-		len(c.InputShape[0].Dim) != 0 {
-		inputDimensions = toInt64Slice(c.InputShape[0].Dim)
+	graph := toposort.NewGraph(len(c.layers))
+	for key := range c.layers {
+		graph.AddNode(key)
+	}
+	for key, val := range c.layers {
+		for _, bottom := range val.Bottom {
+			graph.AddEdge(bottom, key)
+		}
 	}
 
-	for _, lyr := range c.Layer {
-		var layer dllayer.Layer
-		switch strings.ToLower(lyr.Type) {
-		case "input":
-			layer = mkInput(lyr.InputParam)
-		case "data":
-			data := lyr.DataParam
-			pp.Println(data)
-		case "convolution":
-			layer = mkConv(lyr.ConvolutionParam)
-		case "relu":
-			layer = mkReLU(lyr.ReluParam)
-		case "dropout":
-			layer = mkDropout(lyr.DropoutParam)
-		case "innerproduct":
-			layer = mkInnerProduct(lyr.InnerProductParam)
-		case "pooling":
-			layer = mkPooling(lyr.PoolingParam)
-		case "batchnorm", "bn":
-		case "lrn":
-			layer = mkLRN(lyr.LrnParam)
-		case "normalize":
-		case "concat":
-		case "softmax", "softmaxwithloss", "softmax_loss":
-			layer = mkSoftMax(lyr.SoftmaxParam)
-		case "flatten":
-		case "eltwise":
-		case "power":
-		case "deconvolution":
-		case "crop":
-		case "scale":
-		case "implicit":
-		case "accuracy":
-		case "permute":
+	topSort, ok := graph.Toposort()
+	if !ok {
+		log.Error("failed to perform topological sort on graph")
+		return nil
+	}
 
-		}
+	infos := []dllayer.LayerInfo{}
+	for _, name := range topSort {
+		lyr := c.layers[name]
+		layer := c.mkLayer(lyr)
 		if layer == nil {
-			pp.Println(lyr)
 			return nil
 		}
-		layer.SetName(lyr.Name)
 		info := layer.LayerInformation(inputDimensions)
+		c.layerInformation[lyr.Name] = info
 		infos = append(infos, info)
 		inputDimensions = info.OutputDimensions()
 	}
+	return infos
+}
 
-	for _, lyr := range c.Layers {
+func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo {
+
+	infos := []dllayer.LayerInfo{}
+	for _, lyr := range c.v1layers {
 		switch lyr.Type {
 		case caffe.V1LayerParameter_DATA:
 			println("data layer")
@@ -187,8 +168,86 @@ func (c Caffe) LayerInformations() []dllayer.LayerInfo {
 			return nil
 		}
 	}
-
 	return infos
+
+}
+
+func (c Caffe) LayerInformations() []dllayer.LayerInfo {
+
+	var inputDimensions []int64
+	if len(c.InputDim) != 0 {
+		inputDimensions = toInt64Slice(c.InputDim)
+	} else if len(c.InputShape) != 0 &&
+		c.InputShape[0] != nil &&
+		len(c.InputShape[0].Dim) != 0 {
+		inputDimensions = toInt64Slice(c.InputShape[0].Dim)
+	}
+
+	if len(c.layers) != 0 {
+		return c.layerInformations(inputDimensions)
+	}
+
+	if len(c.v1layers) != 0 {
+		return c.layerInformationsV1(inputDimensions)
+	}
+
+	return nil
+}
+
+func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
+	var layer dllayer.Layer
+	switch strings.ToLower(lyr.Type) {
+	case "input":
+		layer = mkInput(lyr.InputParam)
+	case "data":
+		data := lyr.DataParam
+		pp.Println(data)
+	case "convolution":
+		layer = mkConv(lyr.ConvolutionParam)
+	case "relu":
+		layer = mkReLU(lyr.ReluParam)
+	case "dropout":
+		layer = mkDropout(lyr.DropoutParam)
+	case "innerproduct":
+		layer = mkInnerProduct(lyr.InnerProductParam)
+	case "pooling":
+		layer = mkPooling(lyr.PoolingParam)
+	case "batchnorm", "bn":
+	case "lrn":
+		layer = mkLRN(lyr.LrnParam)
+	case "normalize":
+	case "concat":
+		parentsInfo := []dllayer.LayerInfo{}
+		for _, name := range lyr.Bottom {
+			info, ok := c.layerInformation[name]
+			if !ok {
+				log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
+			}
+			if ok {
+				parentsInfo = append(parentsInfo, info)
+			}
+		}
+		layer = mkConcat(parentsInfo, lyr.ConcatParam)
+	case "softmax", "softmaxwithloss", "softmax_loss":
+		layer = mkSoftMax(lyr.SoftmaxParam)
+	case "flatten":
+	case "eltwise":
+	case "power":
+	case "deconvolution":
+	case "crop":
+	case "scale":
+	case "implicit":
+	case "accuracy":
+	case "permute":
+
+	}
+	if layer == nil {
+		pp.Println(lyr)
+		return nil
+	}
+	layer.SetName(lyr.Name)
+
+	return layer
 }
 
 func mkInput(param *caffe.InputParameter) dllayer.Layer {
@@ -267,5 +326,11 @@ func mkPooling(param *caffe.PoolingParameter) dllayer.Layer {
 func mkInnerProduct(param *caffe.InnerProductParameter) dllayer.Layer {
 	return &layer.InnerProduct{
 		NumOutput: param.NumOutput,
+	}
+}
+
+func mkConcat(parentsInfo []dllayer.LayerInfo, param *caffe.ConcatParameter) dllayer.Layer {
+	return &layer.Concat{
+		ParentsInformation: parentsInfo,
 	}
 }

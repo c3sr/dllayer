@@ -1,0 +1,19 @@
+package: github.com/rai-project/dllayer
+import:
+- package: github.com/k0kubun/pp
+  version: ~2.3.0
+- package: github.com/philopon/go-toposort
+- package: github.com/rai-project/caffe
+- package: github.com/rai-project/config
+- package: github.com/rai-project/logger
+- package: github.com/sirupsen/logrus
+- package: github.com/spf13/cast
+- package: golang.org/x/sync
+  subpackages:
+  - syncmap
+testImport:
+- package: github.com/GeertJohan/go-sourcepath
+- package: github.com/stretchr/testify
+  version: ~1.1.4
+  subpackages:
+  - assert

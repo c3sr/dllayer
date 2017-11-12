@@ -52,10 +52,10 @@ func (c *Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInf
 	wOut := int64(math.Floor(float64(wIn+2*int64(c.PadW)-int64(kernelW))/float64(c.StrideW))) + 1
 	kernelH := c.Dilation*(c.KernelH-1) + 1
 	hOut := int64(math.Floor(float64(hIn+2*int64(c.PadH)-int64(kernelH))/float64(c.StrideH))) + 1
-	chOut := int64(c.NumOutput)
+	cOut := int64(c.NumOutput)
 
 	flops := dllayer.FlopsInformation{
-		MultiplyAdds: (int64(c.KernelW*c.KernelH) * (wOut * hOut) * nIn * chOut * batchOut) / int64(c.Group),
+		MultiplyAdds: (int64(c.KernelW*c.KernelH) * (wOut * hOut) * nIn * cOut * batchOut) / int64(c.Group),
 	}
 
 	return &Information{
@@ -63,7 +63,7 @@ func (c *Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInf
 		typ:              c.Type(),
 		flops:            flops,
 		inputDimensions:  inputDimensions,
-		outputDimensions: []int64{nIn, chOut, hOut, wOut},
+		outputDimensions: []int64{nIn, cOut, hOut, wOut},
 	}
 }
 
