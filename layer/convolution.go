@@ -7,6 +7,7 @@ import (
 )
 
 type Convolution struct {
+	Base
 	NumOutput uint32
 	PadH      uint32
 	PadW      uint32
@@ -18,7 +19,7 @@ type Convolution struct {
 	Group     uint32
 }
 
-func (Convolution) Name() string {
+func (Convolution) Type() string {
 	return "Convolution"
 }
 
@@ -30,18 +31,18 @@ func (Convolution) Description() string {
 	return ``
 }
 
-func (c Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
+func (c *Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInfo {
 	/*
 	  ## Add Input/Output Dimensions + Channels to each Node / Layer
 	  # shape.dim: (    N   x   K   x   W   x   H   )
 	  #              batch   channel  width   height
-	  #               chIn    chOut   wIn     wOut
+	  #               nIn      cIn     wIn     wOut
 	*/
 
 	nIn := inputDimensions[0]
 	cIn := inputDimensions[1]
-	hIn := inputDimensions[2]
-	wIn := inputDimensions[3]
+	wIn := inputDimensions[2]
+	hIn := inputDimensions[3]
 
 	_, _, _, _ = nIn, cIn, hIn, wIn
 
@@ -53,9 +54,13 @@ func (c Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInfo
 	hOut := int64(math.Floor(float64(hIn+2*int64(c.PadH)-int64(kernelH))/float64(c.StrideH))) + 1
 	chOut := int64(c.NumOutput)
 
-	flops := (int64(c.KernelW*c.KernelH) * (wOut * hOut) * nIn * chOut * batchOut) / int64(c.Group)
+	flops := dllayer.FlopsInformation{
+		MultiplyAdds: (int64(c.KernelW*c.KernelH) * (wOut * hOut) * nIn * chOut * batchOut) / int64(c.Group),
+	}
 
 	return &Information{
+		name:             c.name,
+		typ:              c.Type(),
 		flops:            flops,
 		inputDimensions:  inputDimensions,
 		outputDimensions: []int64{nIn, chOut, hOut, wOut},
@@ -63,5 +68,5 @@ func (c Convolution) LayerInformation(inputDimensions []int64) dllayer.LayerInfo
 }
 
 func init() {
-	dllayer.Register(Convolution{})
+	dllayer.Register(&Convolution{})
 }
