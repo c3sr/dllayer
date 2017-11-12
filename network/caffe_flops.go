@@ -8,7 +8,7 @@ import (
 	"github.com/rai-project/dllayer"
 	"github.com/rai-project/dllayer/layer"
 
-  toposort "github.com/philopon/go-toposort"
+	toposort "github.com/philopon/go-toposort"
 )
 
 // See http://caffe.berkeleyvision.org/tutorial/layers.html
@@ -129,7 +129,7 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		graph.AddNode(lyr.Name)
 	}
 	for _, lyr := range c.Layer {
-    key := lyr.Name
+		key := lyr.Name
 		for _, bottom := range lyr.Bottom {
 			graph.AddEdge(bottom, key)
 		}
@@ -146,11 +146,13 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		lyr := c.layers[name]
 		layer := c.mkLayer(lyr)
 		if layer == nil {
+			pp.Println("failed to create ", name)
 			return nil
 		}
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
 		infos = append(infos, info)
+		pp.Println(name, " ", info.OutputDimensions()[1])
 		inputDimensions = info.OutputDimensions()
 	}
 	return infos
@@ -158,16 +160,16 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 
 func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo {
 
-  graph := toposort.NewGraph(len(c.Layers))
-  for _, lyr := range c.Layers {
-    graph.AddNode(lyr.Name)
-  }
-  for _, lyr := range c.Layers {
-    key := lyr.Name
-    for _, bottom := range lyr.Bottom {
-      graph.AddEdge(bottom, key)
-    }
-  }
+	graph := toposort.NewGraph(len(c.Layers))
+	for _, lyr := range c.Layers {
+		graph.AddNode(lyr.Name)
+	}
+	for _, lyr := range c.Layers {
+		key := lyr.Name
+		for _, bottom := range lyr.Bottom {
+			graph.AddEdge(bottom, key)
+		}
+	}
 
 	topSort, ok := graph.Toposort()
 	if !ok {
@@ -376,9 +378,9 @@ func mkBatchNorm(param *caffe.BatchNormParameter) dllayer.Layer {
 
 func mkLRN(param *caffe.LRNParameter) dllayer.Layer {
 	size := uint32(1)
-	 if param != nil && param.LocalSize != nil && *param.LocalSize != 0 {
-	 	size = *param.LocalSize
-	 }
+	if param != nil && param.LocalSize != nil && *param.LocalSize != 0 {
+		size = *param.LocalSize
+	}
 	region := "ACROSS_CHANNELS"
 	if param != nil && param.NormRegion != nil && *param.NormRegion != 0 {
 		region = "WITHIN_CHANNEL"
