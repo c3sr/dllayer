@@ -141,6 +141,7 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		return nil
 	}
 
+	res := []dllayer.LayerInfo{}
 	infos := map[string]dllayer.LayerInfo{}
 	for _, name := range topSort {
 		lyr := c.layers[name]
@@ -152,7 +153,10 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		if len(lyr.Bottom) == 0 {
 			// nothing .. this is the root layer
 		} else if len(lyr.Bottom) == 1 {
-			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
+			bot := lyr.Bottom[0]
+			if info, ok := infos[bot]; ok {
+				inputDimensions = info.OutputDimensions()
+			}
 		} else if strings.ToLower(lyr.Type) != "concat" {
 			log.WithField("layer_type", lyr.Type).
 				WithField("layer", lyr).
@@ -161,15 +165,9 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
 		infos[name] = info
+		res = append(res, info)
 	}
-	vals := func(kv map[string]dllayer.LayerInfo) []dllayer.LayerInfo {
-		res := []dllayer.LayerInfo{}
-		for _, v := range kv {
-			res = append(res, v)
-		}
-		return res
-	}
-	return vals(infos)
+	return res
 }
 
 func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo {
@@ -191,6 +189,7 @@ func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo 
 		return nil
 	}
 
+	res := []dllayer.LayerInfo{}
 	infos := map[string]dllayer.LayerInfo{}
 	for _, name := range topSort {
 		lyr := c.v1layers[name]
@@ -202,7 +201,10 @@ func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo 
 		if len(lyr.Bottom) == 0 {
 			// nothing .. this is the root layer
 		} else if len(lyr.Bottom) == 1 {
-			inputDimensions = infos[lyr.Bottom[0]].OutputDimensions()
+			bot := lyr.Bottom[0]
+			if info, ok := infos[bot]; ok {
+				inputDimensions = info.OutputDimensions()
+			}
 		} else if strings.ToLower(lyr.Type.String()) != "concat" {
 			log.WithField("layer_type", lyr.Type).
 				WithField("layer", lyr).
@@ -211,15 +213,9 @@ func (c Caffe) layerInformationsV1(inputDimensions []int64) []dllayer.LayerInfo 
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
 		infos[name] = info
+		res = append(res, info)
 	}
-	vals := func(kv map[string]dllayer.LayerInfo) []dllayer.LayerInfo {
-		res := []dllayer.LayerInfo{}
-		for _, v := range kv {
-			res = append(res, v)
-		}
-		return res
-	}
-	return vals(infos)
+	return res
 }
 
 func (c Caffe) LayerInformations() []dllayer.LayerInfo {

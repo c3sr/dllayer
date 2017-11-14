@@ -9,6 +9,8 @@ type Layer interface {
 }
 
 type LayerInfo interface {
+	Name() string
+	Type() string
 	Flops() FlopsInformation
 	Memory() MemoryInformation
 	InputDimensions() []int64

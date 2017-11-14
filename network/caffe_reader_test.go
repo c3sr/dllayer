@@ -11,7 +11,7 @@ import (
 
 func TestCaffeReader(t *testing.T) {
 	cwd := sourcepath.MustAbsoluteDir()
-	resnet101ProtoTxtPath := filepath.Join(cwd, "..", "assets", "model_graph", "googlenet.prototxt")
+	resnet101ProtoTxtPath := filepath.Join(cwd, "..", "assets", "model_graph", "squeezenet_1.1.prototxt")
 	net, err := NewCaffe(resnet101ProtoTxtPath)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, net)
