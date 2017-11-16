@@ -347,10 +347,10 @@ func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
 		layer = mkLRN(lyr.LrnParam)
 	case "normalize":
 	case "concat":
-		parentsInfo := getParentsInfoV1(lyr)
+		parentsInfo := c.getParentsInfoV1(lyr)
 		layer = mkConcat(parentsInfo, lyr.ConcatParam)
 	case "eltwise":
-		parentsInfo := getParentsInfoV1(lyr)
+		parentsInfo := c.getParentsInfoV1(lyr)
 		layer = mkElementWise(parentsInfo, lyr.EltwiseParam)
 	case "softmax", "softmaxwithloss", "softmax_loss":
 		layer = mkSoftMax(lyr.SoftmaxParam)
