@@ -243,6 +243,21 @@ func (c Caffe) LayerInformations() []dllayer.LayerInfo {
 	return nil
 }
 
+func (c Caffe) getParentsInfo(lyr *caffe.LayerParameter) []dllayer.LayerInfo {
+	parentsInfo := []dllayer.LayerInfo{}
+	for _, name := range lyr.Bottom {
+		info, ok := c.layerInformation[name]
+		if !ok {
+			log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
+		}
+		if ok {
+			parentsInfo = append(parentsInfo, info)
+		}
+	}
+
+	return parentsInfo
+}
+
 func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
 	var layer dllayer.Layer
 	layerType := strings.ToLower(lyr.Type)
@@ -267,21 +282,14 @@ func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
 		layer = mkLRN(lyr.LrnParam)
 	case "normalize":
 	case "concat":
-		parentsInfo := []dllayer.LayerInfo{}
-		for _, name := range lyr.Bottom {
-			info, ok := c.layerInformation[name]
-			if !ok {
-				log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
-			}
-			if ok {
-				parentsInfo = append(parentsInfo, info)
-			}
-		}
+		parentsInfo := c.getParentsInfo(lyr)
 		layer = mkConcat(parentsInfo, lyr.ConcatParam)
+	case "eltwise":
+		parentsInfo := c.getParentsInfo(lyr)
+		layer = mkElementWise(parentsInfo, lyr.EltwiseParam)
 	case "softmax", "softmaxwithloss", "softmax_loss":
 		layer = mkSoftMax(lyr.SoftmaxParam)
 	case "flatten":
-	case "eltwise":
 	case "power":
 	case "deconvolution":
 	case "crop":
@@ -301,6 +309,21 @@ func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
 	layer.SetName(lyr.Name)
 
 	return layer
+}
+
+func (c Caffe) getParentsInfoV1(lyr *caffe.V1LayerParameter) []dllayer.LayerInfo {
+	parentsInfo := []dllayer.LayerInfo{}
+	for _, name := range lyr.Bottom {
+		info, ok := c.layerInformation[name]
+		if !ok {
+			log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
+		}
+		if ok {
+			parentsInfo = append(parentsInfo, info)
+		}
+	}
+
+	return parentsInfo
 }
 
 func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
@@ -324,21 +347,14 @@ func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
 		layer = mkLRN(lyr.LrnParam)
 	case "normalize":
 	case "concat":
-		parentsInfo := []dllayer.LayerInfo{}
-		for _, name := range lyr.Bottom {
-			info, ok := c.layerInformation[name]
-			if !ok {
-				log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
-			}
-			if ok {
-				parentsInfo = append(parentsInfo, info)
-			}
-		}
+		parentsInfo := getParentsInfoV1(lyr)
 		layer = mkConcat(parentsInfo, lyr.ConcatParam)
+	case "eltwise":
+		parentsInfo := getParentsInfoV1(lyr)
+		layer = mkElementWise(parentsInfo, lyr.EltwiseParam)
 	case "softmax", "softmaxwithloss", "softmax_loss":
 		layer = mkSoftMax(lyr.SoftmaxParam)
 	case "flatten":
-	case "eltwise":
 	case "power":
 	case "deconvolution":
 	case "crop":
@@ -456,6 +472,17 @@ func mkInnerProduct(param *caffe.InnerProductParameter) dllayer.Layer {
 
 func mkConcat(parentsInfo []dllayer.LayerInfo, param *caffe.ConcatParameter) dllayer.Layer {
 	return &layer.Concat{
+		ParentsInformation: parentsInfo,
+	}
+}
+
+func mkElementWise(parentsInfo []dllayer.LayerInfo, param *caffe.EltwiseParameter) dllayer.Layer {
+	op := "SUM"
+	if param.Operation != nil && param.Operation.String() != "" {
+		op = param.Operation.String()
+	}
+	return &layer.ElementWise{
+		Operation:          op,
 		ParentsInformation: parentsInfo,
 	}
 }
