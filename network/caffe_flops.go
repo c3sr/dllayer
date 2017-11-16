@@ -157,7 +157,7 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 			if info, ok := infos[bot]; ok {
 				inputDimensions = info.OutputDimensions()
 			}
-		} else if strings.ToLower(lyr.Type) != "concat" {
+		} else if strings.ToLower(lyr.Type) != "concat" && strings.ToLower(lyr.Type) != "eltwise" {
 			log.WithField("layer_type", lyr.Type).
 				WithField("layer", lyr).
 				Error("unhandeled to input dimension computation")
