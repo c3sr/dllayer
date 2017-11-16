@@ -478,7 +478,7 @@ func mkConcat(parentsInfo []dllayer.LayerInfo, param *caffe.ConcatParameter) dll
 
 func mkElementWise(parentsInfo []dllayer.LayerInfo, param *caffe.EltwiseParameter) dllayer.Layer {
 	op := "SUM"
-	if param.Operation != nil && param.Operation.String() != "" {
+	if param != nil && param.Operation != nil && param.Operation.String() != "" {
 		op = param.Operation.String()
 	}
 	return &layer.ElementWise{
