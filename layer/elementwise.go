@@ -3,7 +3,6 @@ package layer
 import (
 	"strings"
 
-	"github.com/apex/log"
 	"github.com/rai-project/dllayer"
 )
 
