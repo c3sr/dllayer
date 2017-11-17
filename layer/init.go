@@ -1,4 +1,4 @@
-package dllayer
+package layer
 
 import (
 	"github.com/rai-project/config"
