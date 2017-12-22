@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/Unknwon/com"
 	framework "github.com/rai-project/dlframework/framework/cmd"
+	"github.com/rai-project/utils"
 )
 
 func getSrcPath(importPath string) (appPath string) {
@@ -44,4 +46,11 @@ func forallmodels(run func() error) error {
 		}
 	}
 	return nil
+}
+
+func flopsToString(e int64, humanFlops bool) string {
+	if humanFlops {
+		return utils.Flops(uint64(e))
+	}
+	return fmt.Sprintf("%v", e)
 }

@@ -98,6 +98,7 @@ var FlopsInfoCmd = &cobra.Command{
 							Name:             info.Name(),
 							Type:             info.Type(),
 							FlopsInformation: info.Flops(),
+							Total:            info.Flops().Total(),
 						},
 					)
 				}

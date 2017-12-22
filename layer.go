@@ -54,6 +54,11 @@ func (flops FlopsInformation) Row(humanFlops bool) []string {
 	}
 }
 
+func (this FlopsInformation) Total() int64 {
+	return this.MultiplyAdds + this.Additions + this.Divisions +
+		this.Exponentiations + this.Comparisons + this.General
+}
+
 func (this FlopsInformation) Add(other FlopsInformation) FlopsInformation {
 	return FlopsInformation{
 		MultiplyAdds:    this.MultiplyAdds + other.MultiplyAdds,
