@@ -59,6 +59,14 @@ var FlopsInfoCmd = &cobra.Command{
 		} else {
 			outputFileExtension = outputFormat
 		}
+
+		if modelName == "all" && outputFormat == "json" {
+			dir := "theoretical_flops"
+			if fullFlops {
+				dir += "_full"
+			}
+			outputFileName = filepath.Join(mlArcWebAssetsPath, dir)
+		}
 		return nil
 	},
 	RunE: func(c *cobra.Command, args []string) error {
