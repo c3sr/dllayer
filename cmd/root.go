@@ -16,7 +16,6 @@ var (
 	modelVersion        string
 	fullFlops           bool
 	humanFlops          bool
-	outputToFile        bool
 	outputFormat        string
 	outputFileName      string
 	outputFileExtension string
@@ -135,7 +134,6 @@ func init() {
 	FlopsInfoCmd.PersistentFlags().StringVar(&modelVersion, "model_version", "1.0", "modelVersion")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&humanFlops, "human", false, "print flops in human form")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&fullFlops, "full", false, "print all information about flops")
-	FlopsInfoCmd.PersistentFlags().BoolVar(&outputToFile, "output_to_file", false, "output to file")
 
 	FlopsInfoCmd.PersistentFlags().BoolVar(&noHeader, "no_header", false, "show header labels for output")
 	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFileName, "output", "o", "", "output file name")
