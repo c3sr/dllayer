@@ -123,6 +123,7 @@ var FlopsInfoCmd = &cobra.Command{
 			writer.Row(netSummary{Name: "Exponentiations", Value: info.Exponentiations})
 			writer.Row(netSummary{Name: "Comparisons", Value: info.Comparisons})
 			writer.Row(netSummary{Name: "General", Value: info.General})
+			writer.Row(netSummary{Name: "Total", Value: info.Total()})
 
 			return nil
 		}
