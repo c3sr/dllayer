@@ -46,7 +46,7 @@ var FlopsInfoCmd = &cobra.Command{
 		"theoretical_flops",
 	},
 	Short: "Get flops information about the model",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	PreRunE: func(cmd *cobra.Command, args []string) error {
 		if Framework.Name == "" || Framework.Version == "" {
 			return errors.New("Framework is not set.")
 		}
