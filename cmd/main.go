@@ -26,6 +26,7 @@ func main() {
 	})
 	cmd.Init()
 
+	caffe.Register()
 	dllayercmd.Framework = caffe.FrameworkManifest
 
 	if err := dllayercmd.FlopsInfoCmd.Execute(); err != nil {

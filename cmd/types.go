@@ -8,8 +8,8 @@ import (
 )
 
 type layer struct {
-	Name                     string `json:"name,omitempty"`
-	Type                     string `json:"type,omitempty"`
+	Name                     string `json:"name"`
+	Type                     string `json:"type"`
 	dllayer.FlopsInformation `json:",inline"`
 }
 
@@ -24,8 +24,8 @@ func (l layer) Row(humanFlops bool) []string {
 }
 
 type netSummary struct {
-	Name  string `json:"name,omitempty"`
-	Value int64  `json:"value,omitempty"`
+	Name  string `json:"name"`
+	Value int64  `json:"value"`
 }
 
 func (netSummary) Header() []string {

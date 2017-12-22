@@ -24,12 +24,12 @@ type LayerInfo interface {
 }
 
 type FlopsInformation struct {
-	MultiplyAdds    int64 `json:"multiply_adds,omitempty"`
-	Additions       int64 `json:"additions,omitempty"`
-	Divisions       int64 `json:"divisions,omitempty"`
-	Exponentiations int64 `json:"exponentiations,omitempty"`
-	Comparisons     int64 `json:"comparisons,omitempty"`
-	General         int64 `json:"general,omitempty"`
+	MultiplyAdds    int64 `json:"multiply_adds"`
+	Additions       int64 `json:"additions"`
+	Divisions       int64 `json:"divisions"`
+	Exponentiations int64 `json:"exponentiations"`
+	Comparisons     int64 `json:"comparisons"`
+	General         int64 `json:"general"`
 }
 
 func (FlopsInformation) Header() []string {

@@ -38,7 +38,10 @@ func forallmodels(run func() error) error {
 	for _, model := range framework.DefaultEvaulationModels {
 		modelName, modelVersion = framework.ParseModelName(model)
 		outputFileName = filepath.Join(outputDirectory, model+"."+outputFileExtension)
-		run()
+		err := run()
+		if err != nil {
+			log.WithError(err).WithField("modelName", modelName).WithField(modelVersion, modelVersion).Error("failed to get flops information")
+		}
 	}
 	return nil
 }
