@@ -1,27 +1,30 @@
-package server
+package cmd
 
 import (
-	"os"
 	"path/filepath"
 	"strings"
 
-	"encoding/csv"
-	"fmt"
-
 	"github.com/Unknwon/com"
-	"github.com/olekukonko/tablewriter"
 	"github.com/pkg/errors"
 	"github.com/rai-project/dlframework"
 	"github.com/rai-project/dllayer/network"
-	"github.com/rai-project/utils"
 	"github.com/spf13/cobra"
 )
 
 var (
-	fullFlops         bool
-	humanFlops        bool
-	outputToFile      bool
-	flopsOutputFormat string
+	modelName           string
+	modelVersion        string
+	fullFlops           bool
+	humanFlops          bool
+	outputToFile        bool
+	outputFormat        string
+	outputFileName      string
+	outputFileExtension string
+	noHeader            bool
+	appendOutput        bool
+	goPath              string
+	raiSrcPath          string
+	mlArcWebAssetsPath  string
 )
 
 func cleanPath(path string) string {
@@ -38,109 +41,84 @@ func getGraphPath(model *dlframework.ModelManifest) string {
 }
 
 var FlopsInfoCmd = &cobra.Command{
-	Use:   "model",
+	Use: "model",
+	Aliases: []string{
+		"flops",
+	},
 	Short: "Get flops information about the model",
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		if Framework.Name == "" || Framework.Version == "" {
+			return errors.New("Framework is not set.")
+		}
+		if outputFormat == "" && outputFileName != "" {
+			outputFormat = filepath.Ext(outputFileName)
+		}
+
+		if modelName != "all" {
+			outputFileExtension = filepath.Ext(outputFileName)
+		} else {
+			outputFileExtension = outputFormat
+		}
+		return nil
+	},
 	RunE: func(c *cobra.Command, args []string) error {
-
-		model, err := framework.FindModel(modelName + ":" + modelVersion)
-		if err != nil {
-			return err
-		}
-
-		graphPath := getGraphPath(model)
-		if !com.IsFile(graphPath) {
-			return errors.Errorf("file %v does not exist", graphPath)
-		}
-
-		net, err := network.NewCaffe(graphPath)
-		if err != nil {
-			return err
-		}
-
-		flopsToString := func(e int64) string {
-			return fmt.Sprintf("%v", e)
-		}
-		if humanFlops {
-			flopsToString = func(e int64) string {
-				return utils.Flops(uint64(e))
-			}
-		}
-
-		output := os.Stdout
-		if outputToFile {
-			output, err = os.Create(strings.ToLower(modelName + "_" + modelVersion))
+		run := func() error {
+			model, err := Framework.FindModel(modelName + ":" + modelVersion)
 			if err != nil {
 				return err
 			}
-			defer output.Close()
-		}
-		tableWriter := tablewriter.NewWriter(output)
-		csvWriter := csv.NewWriter(output)
 
-		flopsOutputFormat := strings.ToLower(flopsOutputFormat)
-
-		writeHeader := func(header []string) {
-			switch flopsOutputFormat {
-			case "table":
-				tableWriter.SetHeader(header)
-			case "csv":
-				csvWriter.Write(header)
+			graphPath := getGraphPath(model)
+			if !com.IsFile(graphPath) {
+				return errors.Errorf("file %v does not exist", graphPath)
 			}
-		}
 
-		writeRecord := func(row []string) {
-			switch flopsOutputFormat {
-			case "table":
-				tableWriter.Append(row)
-			case "csv":
-				csvWriter.Write(row)
+			net, err := network.NewCaffe(graphPath)
+			if err != nil {
+				return err
 			}
-		}
 
-		flush := func() {
-			switch flopsOutputFormat {
-			case "table":
-				tableWriter.Render()
-			case "csv":
-				csvWriter.Flush()
+			if fullFlops {
+				infos := net.LayerInformations()
+
+				writer := NewWriter(layer{}, humanFlops)
+				defer writer.Close()
+
+				for _, info := range infos {
+					writer.Row(
+						layer{
+							Name:             info.Name(),
+							Type:             info.Type(),
+							FlopsInformation: info.Flops(),
+						},
+					)
+				}
+
+				return nil
 			}
-		}
 
-		defer flush()
+			// if outputFormat == "json" {
+			// 	err := errors.New("json output is not currently supported for full flop information")
+			// 	log.WithError(err).Error("unable to output json")
+			// 	return err
+			// }
 
-		if fullFlops {
+			info := net.FlopsInformation()
 
-			infos := net.LayerInformations()
+			writer := NewWriter(netSummary{}, humanFlops)
+			defer writer.Close()
 
-			writeHeader([]string{"LayerName", "LayerType", "#MultiplyAdds", "#Additions", "#Divisions", "#Exponentiations", "#Comparisons", "#General"})
+			writer.Row(netSummary{Name: "MultipleAdds", Value: info.MultiplyAdds})
+			writer.Row(netSummary{Name: "Additions", Value: info.Additions})
+			writer.Row(netSummary{Name: "Divisions", Value: info.Divisions})
+			writer.Row(netSummary{Name: "Exponentiations", Value: info.Exponentiations})
+			writer.Row(netSummary{Name: "Comparisons", Value: info.Comparisons})
+			writer.Row(netSummary{Name: "General", Value: info.General})
 
-			for _, info := range infos {
-				flops := info.Flops()
-				writeRecord([]string{
-					info.Name(),
-					info.Type(),
-					flopsToString(flops.MultiplyAdds),
-					flopsToString(flops.Additions),
-					flopsToString(flops.Divisions),
-					flopsToString(flops.Exponentiations),
-					flopsToString(flops.Comparisons),
-					flopsToString(flops.General),
-				})
-			}
 			return nil
 		}
 
-		info := net.FlopsInformation()
-
-		writeHeader([]string{"Flop Type", "#"})
-		writeRecord([]string{"MultipleAdds", flopsToString(info.MultiplyAdds)})
-		writeRecord([]string{"Additions", flopsToString(info.Additions)})
-		writeRecord([]string{"Divisions", flopsToString(info.Divisions)})
-		writeRecord([]string{"Exponentiations", flopsToString(info.Exponentiations)})
-		writeRecord([]string{"Comparisons", flopsToString(info.Comparisons)})
-		writeRecord([]string{"General", flopsToString(info.General)})
-
-		return nil
+		return forallmodels(run)
 	},
 }
 
@@ -150,5 +128,12 @@ func init() {
 	FlopsInfoCmd.PersistentFlags().BoolVar(&humanFlops, "human", false, "print flops in human form")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&fullFlops, "full", false, "print all information about flops")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&outputToFile, "output_to_file", false, "output to file")
-	FlopsInfoCmd.PersistentFlags().StringVarP(&flopsOutputFormat, "format", "f", "table", "print format to use")
+
+	FlopsInfoCmd.PersistentFlags().BoolVar(&noHeader, "no_header", false, "show header labels for output")
+	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFileName, "output", "o", "", "output file name")
+	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", "table", "print format to use")
+
+	goPath = com.GetGOPATHs()[0]
+	raiSrcPath = getSrcPath("github.com/rai-project")
+	mlArcWebAssetsPath = filepath.Join(raiSrcPath, "ml-arc-web", "src", "assets")
 }

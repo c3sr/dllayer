@@ -1,5 +1,11 @@
 package dllayer
 
+import (
+	"fmt"
+
+	"github.com/rai-project/utils"
+)
+
 type Layer interface {
 	Type() string
 	Aliases() []string
@@ -28,6 +34,24 @@ type FlopsInformation struct {
 
 func (FlopsInformation) Header() []string {
 	return []string{"MultiplyAdds", "Additions", "Divisions", "Exponentiations", "Comparisons", "General"}
+}
+func (flops FlopsInformation) Row(humanFlops bool) []string {
+	flopsToString := func(e int64) string {
+		return fmt.Sprintf("%v", e)
+	}
+	if humanFlops {
+		flopsToString = func(e int64) string {
+			return utils.Flops(uint64(e))
+		}
+	}
+	return []string{
+		flopsToString(flops.MultiplyAdds),
+		flopsToString(flops.Additions),
+		flopsToString(flops.Divisions),
+		flopsToString(flops.Exponentiations),
+		flopsToString(flops.Comparisons),
+		flopsToString(flops.General),
+	}
 }
 
 func (this FlopsInformation) Add(other FlopsInformation) FlopsInformation {
