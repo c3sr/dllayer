@@ -40,9 +40,10 @@ func getGraphPath(model *dlframework.ModelManifest) string {
 }
 
 var FlopsInfoCmd = &cobra.Command{
-	Use: "model",
+	Use: "flops",
 	Aliases: []string{
-		"flops",
+		"model",
+		"theoretical_flops",
 	},
 	Short: "Get flops information about the model",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
