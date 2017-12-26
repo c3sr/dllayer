@@ -7,7 +7,7 @@ import (
 type layer struct {
 	Name                     string `json:"name"`
 	Type                     string `json:"type"`
-	dllayer.FlopsInformation `json:",inline"`
+	dllayer.FlopsInformation `json:",inline,flatten""`
 	Total                    int64 `json:"total"`
 }
 

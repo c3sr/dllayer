@@ -8,7 +8,7 @@ import (
 )
 
 type Pooling struct {
-	Base     `json:",inline,omitempty"`
+	Base     `json:",inline,flatten",omitempty"`
 	Operator string `json:"operator,omitempty"`
 	PadH     uint32 `json:"pad_h,omitempty"`
 	PadW     uint32 `json:"pad_w,omitempty"`

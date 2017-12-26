@@ -5,7 +5,7 @@ import (
 )
 
 type InnerProduct struct {
-	Base      `json:",inline,omitempty"`
+	Base      `json:",inline,flatten",omitempty"`
 	NumOutput uint32 `json:"num_output,omitempty"`
 }
 

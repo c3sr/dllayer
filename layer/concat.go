@@ -5,7 +5,7 @@ import (
 )
 
 type Concat struct {
-	Base               `json:",inline,omitempty"`
+	Base               `json:",inline,flatten",omitempty"`
 	ParentsInformation []dllayer.LayerInfo `json:"parents_information,omitempty"`
 }
 

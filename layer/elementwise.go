@@ -7,7 +7,7 @@ import (
 )
 
 type ElementWise struct {
-	Base               `json:",inline,omitempty"`
+	Base               `json:",inline,flatten",omitempty"`
 	Operation          string              `json:"operation,omitempty"`
 	ParentsInformation []dllayer.LayerInfo `json:"parents_information,omitempty"`
 }

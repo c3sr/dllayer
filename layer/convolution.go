@@ -7,7 +7,7 @@ import (
 )
 
 type Convolution struct {
-	Base      `json:",inline,omitempty"`
+	Base      `json:",inline,flatten",omitempty"`
 	NumOutput uint32 `json:"num_output,omitempty"`
 	PadH      uint32 `json:"pad_h,omitempty"`
 	PadW      uint32 `json:"pad_w,omitempty"`

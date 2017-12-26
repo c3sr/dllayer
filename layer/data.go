@@ -5,7 +5,7 @@ import (
 )
 
 type Data struct {
-	Base `json:",inline,omitempty"`
+	Base `json:",inline,flatten",omitempty"`
 	N    int64 `json:"n,omitempty"`
 	C    int64 `json:"c,omitempty"`
 	W    int64 `json:"w,omitempty"`

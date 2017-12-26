@@ -5,7 +5,7 @@ import (
 )
 
 type Dropout struct {
-	Base `json:",inline"`
+	Base `json:",inline,flatten""`
 }
 
 func (Dropout) Type() string {

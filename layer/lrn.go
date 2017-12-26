@@ -5,7 +5,7 @@ import (
 )
 
 type LRN struct {
-	Base   `json:",inline,omitempty"`
+	Base   `json:",inline,flatten",omitempty"`
 	Region string `json:"region,omitempty"`
 	Size   uint32 `json:"size,omitempty"`
 }
