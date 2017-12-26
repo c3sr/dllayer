@@ -5,7 +5,7 @@ import (
 )
 
 type SoftMax struct {
-	Base
+	Base `json:",inline"`
 }
 
 func (SoftMax) Type() string {

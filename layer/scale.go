@@ -5,7 +5,7 @@ import (
 )
 
 type Scale struct {
-	Base
+	Base `json:",inline"`
 }
 
 func (Scale) Type() string {

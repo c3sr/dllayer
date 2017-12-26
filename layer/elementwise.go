@@ -7,9 +7,9 @@ import (
 )
 
 type ElementWise struct {
-	Base
-	Operation          string
-	ParentsInformation []dllayer.LayerInfo
+	Base               `json:",inline,omitempty"`
+	Operation          string              `json:"operation,omitempty"`
+	ParentsInformation []dllayer.LayerInfo `json:"parents_information,omitempty"`
 }
 
 func (ElementWise) Type() string {

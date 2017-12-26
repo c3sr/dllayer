@@ -8,15 +8,15 @@ import (
 )
 
 type Pooling struct {
-	Base
-	Operator string
-	PadH     uint32
-	PadW     uint32
-	KernelH  uint32
-	KernelW  uint32
-	StrideH  uint32
-	StrideW  uint32
-	Global   bool
+	Base     `json:",inline,omitempty"`
+	Operator string `json:"operator,omitempty"`
+	PadH     uint32 `json:"pad_h,omitempty"`
+	PadW     uint32 `json:"pad_w,omitempty"`
+	KernelH  uint32 `json:"kernel_h,omitempty"`
+	KernelW  uint32 `json:"kernel_w,omitempty"`
+	StrideH  uint32 `json:"stride_h,omitempty"`
+	StrideW  uint32 `json:"stride_w,omitempty"`
+	Global   bool   `json:"global,omitempty"`
 }
 
 func (Pooling) Type() string {

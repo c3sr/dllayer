@@ -5,8 +5,8 @@ import (
 )
 
 type InnerProduct struct {
-	Base
-	NumOutput uint32
+	Base      `json:",inline,omitempty"`
+	NumOutput uint32 `json:"num_output,omitempty"`
 }
 
 func (InnerProduct) Type() string {

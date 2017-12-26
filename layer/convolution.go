@@ -7,16 +7,16 @@ import (
 )
 
 type Convolution struct {
-	Base
-	NumOutput uint32
-	PadH      uint32
-	PadW      uint32
-	KernelH   uint32
-	KernelW   uint32
-	StrideH   uint32
-	StrideW   uint32
-	Dilation  uint32
-	Group     uint32
+	Base      `json:",inline,omitempty"`
+	NumOutput uint32 `json:"num_output,omitempty"`
+	PadH      uint32 `json:"pad_h,omitempty"`
+	PadW      uint32 `json:"pad_w,omitempty"`
+	KernelH   uint32 `json:"kernel_h,omitempty"`
+	KernelW   uint32 `json:"kernel_w,omitempty"`
+	StrideH   uint32 `json:"stride_h,omitempty"`
+	StrideW   uint32 `json:"stride_w,omitempty"`
+	Dilation  uint32 `json:"dilation,omitempty"`
+	Group     uint32 `json:"group,omitempty"`
 }
 
 func (Convolution) Type() string {

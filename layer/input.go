@@ -5,11 +5,11 @@ import (
 )
 
 type Input struct {
-	Base
-	N int64
-	C int64
-	W int64
-	H int64
+	Base `json:",inline,omitempty"`
+	N    int64 `json:"n,omitempty"`
+	C    int64 `json:"c,omitempty"`
+	W    int64 `json:"w,omitempty"`
+	H    int64 `json:"h,omitempty"`
 }
 
 func (Input) Type() string {

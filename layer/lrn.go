@@ -5,9 +5,9 @@ import (
 )
 
 type LRN struct {
-	Base
-	Region string
-	Size   uint32
+	Base   `json:",inline,omitempty"`
+	Region string `json:"region,omitempty"`
+	Size   uint32 `json:"size,omitempty"`
 }
 
 func (LRN) Type() string {

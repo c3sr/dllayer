@@ -5,7 +5,7 @@ import (
 )
 
 type BatchNorm struct {
-	Base
+	Base `json:",inline"`
 }
 
 func (BatchNorm) Type() string {

@@ -5,8 +5,8 @@ import (
 )
 
 type Concat struct {
-	Base
-	ParentsInformation []dllayer.LayerInfo
+	Base               `json:",inline,omitempty"`
+	ParentsInformation []dllayer.LayerInfo `json:"parents_information,omitempty"`
 }
 
 func (Concat) Type() string {
