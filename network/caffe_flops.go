@@ -290,13 +290,19 @@ func (c Caffe) mkLayer(lyr *caffe.LayerParameter) dllayer.Layer {
 	case "softmax", "softmaxwithloss", "softmax_loss":
 		layer = mkSoftMax(lyr.SoftmaxParam)
 	case "flatten":
+		pp.Println("unhandeled", layerType)
 	case "power":
+		pp.Println("unhandeled", layerType)
 	case "deconvolution":
+		pp.Println("unhandeled", layerType)
 	case "crop":
+		pp.Println("unhandeled", layerType)
 	case "scale":
 		layer = mkScale(lyr.ScaleParam)
 	case "implicit":
+		pp.Println("unhandeled", layerType)
 	case "accuracy":
+		pp.Println("unhandeled", layerType)
 	case "permute":
 	default:
 		pp.Println("unhandeled", layerType)
@@ -355,12 +361,19 @@ func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
 	case "softmax", "softmaxwithloss", "softmax_loss":
 		layer = mkSoftMax(lyr.SoftmaxParam)
 	case "flatten":
+		pp.Println("unhandeled", layerType)
 	case "power":
+		pp.Println("unhandeled", layerType)
 	case "deconvolution":
+		pp.Println("unhandeled", layerType)
 	case "crop":
+		pp.Println("unhandeled", layerType)
 	case "implicit":
+		pp.Println("unhandeled", layerType)
 	case "accuracy":
+		pp.Println("unhandeled", layerType)
 	case "permute":
+		pp.Println("unhandeled", layerType)
 	default:
 		pp.Println("unhandeled", layerType)
 	}
