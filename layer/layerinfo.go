@@ -3,6 +3,7 @@ package layer
 import (
 	"encoding/json"
 
+	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rai-project/dllayer"
 )
@@ -38,14 +39,9 @@ func (layer *Information) OutputDimensions() []int64 {
 }
 
 func (layer Information) MarshalJSON() ([]byte, error) {
-	data := map[string]interface{}{
-		"type":              layer.Type(),
-		"name":              layer.Name(),
-		"flops":             layer.Flops(),
-		"memory":            layer.Memory(),
-		"input_dimensions":  layer.InputDimensions(),
-		"output_dimensions": layer.OutputDimensions(),
-	}
+	s := structs.New(layer)
+	s.TagName = "json"
+	data := s.Map()
 	return json.Marshal(data)
 }
 
