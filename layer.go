@@ -1,6 +1,7 @@
 package dllayer
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/rai-project/utils"
@@ -24,20 +25,32 @@ type LayerInfo interface {
 }
 
 type FlopsInformation struct {
-	MultiplyAdds    int64 `json:"multiply_adds"`
-	Additions       int64 `json:"additions"`
-	Divisions       int64 `json:"divisions"`
-	Exponentiations int64 `json:"exponentiations"`
-	Comparisons     int64 `json:"comparisons"`
-	General         int64 `json:"general"`
+	InputDimensions  []int64 `json:"input_dimensions,omitempty"`
+	OutputDimensions []int64 `json:"output_dimensions,omitempty"`
+	MultiplyAdds     int64   `json:"multiply_adds"`
+	Additions        int64   `json:"additions"`
+	Divisions        int64   `json:"divisions"`
+	Exponentiations  int64   `json:"exponentiations"`
+	Comparisons      int64   `json:"comparisons"`
+	General          int64   `json:"general"`
 }
 
 func (FlopsInformation) Header() []string {
-	return []string{"MultiplyAdds", "Additions", "Divisions", "Exponentiations", "Comparisons", "General"}
+	return []string{"InputDimensions", "OutputDimensions", "MultiplyAdds", "Additions", "Divisions", "Exponentiations", "Comparisons", "General"}
 }
 func (flops FlopsInformation) Row(humanFlops bool) []string {
 	flopsToString := func(e int64) string {
 		return fmt.Sprintf("%v", e)
+	}
+	dimsToString := func(e []int64) string {
+		if len(e) == 0 {
+			return ""
+		}
+		bts, err := json.Marshal(e)
+		if err != nil {
+			return fmt.Sprintf("%v", e)
+		}
+		return string(bts)
 	}
 	if humanFlops {
 		flopsToString = func(e int64) string {
@@ -45,6 +58,8 @@ func (flops FlopsInformation) Row(humanFlops bool) []string {
 		}
 	}
 	return []string{
+		dimsToString(flops.InputDimensions),
+		dimsToString(flops.OutputDimensions),
 		flopsToString(flops.MultiplyAdds),
 		flopsToString(flops.Additions),
 		flopsToString(flops.Divisions),

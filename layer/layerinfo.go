@@ -26,6 +26,8 @@ func (layer *Information) Name() string {
 }
 
 func (layer *Information) Flops() dllayer.FlopsInformation {
+	layer.flops.InputDimensions = layer.inputDimensions
+	layer.flops.OutputDimensions = layer.outputDimensions
 	return layer.flops
 }
 func (layer *Information) Memory() dllayer.MemoryInformation {
@@ -63,5 +65,15 @@ func (layer *Information) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	return decoder.Decode(data)
+	err = decoder.Decode(data)
+	if err != nil {
+		return err
+	}
+	if len(layer.inputDimensions) == 0 {
+		layer.inputDimensions = layer.flops.InputDimensions
+	}
+	if len(layer.outputDimensions) == 0 {
+		layer.outputDimensions = layer.flops.OutputDimensions
+	}
+	return nil
 }

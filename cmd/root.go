@@ -14,6 +14,7 @@ import (
 var (
 	modelName           string
 	modelVersion        string
+	modelPath           string
 	fullFlops           bool
 	humanFlops          bool
 	outputFormat        string
@@ -50,8 +51,16 @@ var FlopsInfoCmd = &cobra.Command{
 		if Framework.Name == "" || Framework.Version == "" {
 			return errors.New("Framework is not set.")
 		}
+		if outputFormat == "automatic" {
+			outputFormat = ""
+		}
 		if outputFormat == "" && outputFileName != "" {
-			outputFormat = filepath.Ext(outputFileName)
+			outputFormat = strings.TrimLeft(filepath.Ext(outputFileName), ".")
+			if outputFormat == "js" {
+				outputFormat = "json"
+			}
+		} else {
+			outputFormat = "table"
 		}
 
 		if modelName != "all" {
@@ -71,12 +80,22 @@ var FlopsInfoCmd = &cobra.Command{
 	},
 	RunE: func(c *cobra.Command, args []string) error {
 		run := func() error {
-			model, err := Framework.FindModel(modelName + ":" + modelVersion)
-			if err != nil {
-				return err
+			var graphPath string
+			if modelPath == "" {
+				model, err := Framework.FindModel(modelName + ":" + modelVersion)
+				if err != nil {
+					return err
+				}
+
+				graphPath = getGraphPath(model)
+			} else {
+				if s, err := filepath.Abs(modelPath); err == nil {
+					graphPath = s
+				} else {
+					graphPath = modelPath
+				}
 			}
 
-			graphPath := getGraphPath(model)
 			if !com.IsFile(graphPath) {
 				return errors.Errorf("file %v does not exist", graphPath)
 			}
@@ -135,12 +154,13 @@ var FlopsInfoCmd = &cobra.Command{
 func init() {
 	FlopsInfoCmd.PersistentFlags().StringVar(&modelName, "model_name", "BVLC-AlexNet", "modelName")
 	FlopsInfoCmd.PersistentFlags().StringVar(&modelVersion, "model_version", "1.0", "modelVersion")
+	FlopsInfoCmd.PersistentFlags().StringVar(&modelPath, "model_path", "", "path to the model prototxt file")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&humanFlops, "human", false, "print flops in human form")
 	FlopsInfoCmd.PersistentFlags().BoolVar(&fullFlops, "full", false, "print all information about flops")
 
 	FlopsInfoCmd.PersistentFlags().BoolVar(&noHeader, "no_header", false, "show header labels for output")
 	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFileName, "output", "o", "", "output file name")
-	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", "table", "print format to use")
+	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", "automatic", "print format to use")
 
 	goPath = com.GetGOPATHs()[0]
 	raiSrcPath = getSrcPath("github.com/rai-project")
