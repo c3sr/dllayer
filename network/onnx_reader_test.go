@@ -5,19 +5,18 @@ import (
 	"testing"
 
 	"github.com/GeertJohan/go-sourcepath"
-	"github.com/k0kubun/pp"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCaffeReader(t *testing.T) {
+func TestOnnxReader(t *testing.T) {
 	cwd := sourcepath.MustAbsoluteDir()
-	resnet101ProtoTxtPath := filepath.Join(cwd, "..", "assets", "caffe_model_graph", "squeezenet_1.1.prototxt")
-	net, err := NewCaffe(resnet101ProtoTxtPath)
+	mnistProtoTxtPath := filepath.Join(cwd, "..", "assets", "onnx_models", "mnist.onnx")
+	model, err := NewOnnx(mnistProtoTxtPath)
 	assert.NoError(t, err)
-	assert.NotEmpty(t, net)
+	assert.NotEmpty(t, model)
 
-	info := net.FlopsInformation()
-	pp.Println(info)
+	// info := model.FlopsInformation()
+	// pp.Println(info)
 	// pp.Println(net.LayerInformations())
 
 	// net.Layer = nil
