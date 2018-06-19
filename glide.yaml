@@ -12,7 +12,6 @@ import:
 - package: golang.org/x/sync
   subpackages:
   - syncmap
-testImport:
 - package: github.com/GeertJohan/go-sourcepath
 - package: github.com/stretchr/testify
   subpackages:
