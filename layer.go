@@ -38,6 +38,7 @@ type FlopsInformation struct {
 func (FlopsInformation) Header() []string {
 	return []string{"InputDimensions", "OutputDimensions", "MultiplyAdds", "Additions", "Divisions", "Exponentiations", "Comparisons", "General"}
 }
+
 func (flops FlopsInformation) Row(humanFlops bool) []string {
 	flopsToString := func(e int64) string {
 		return fmt.Sprintf("%v", e)

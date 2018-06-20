@@ -6,14 +6,13 @@ import (
 )
 
 type Onnx struct {
-	irVersion    string
-	producerName string
-	model        *onnx.ModelProto
-	graph        *onnx.GraphProto
-	nodes        map[string]*onnx.NodeProto
-	initializers map[string]*onnx.TensorProto
-	inputs       map[string]*onnx.ValueInfoProto
-	outputs      map[string]*onnx.ValueInfoProto
+	irVersion        int64
+	producerName     string
+	model            *onnx.ModelProto
+	graph            *onnx.GraphProto
+	nodes            map[string]*onnx.NodeProto
+	initializers     map[string]*onnx.TensorProto
+	layerInformation map[string]dllayer.LayerInfo
 }
 
 func NewOnnx(protoFileName string) (*Onnx, error) {
@@ -26,32 +25,20 @@ func NewOnnx(protoFileName string) (*Onnx, error) {
 
 	nodes := map[string]*onnx.NodeProto{}
 	for _, n := range graph.Node {
-		nodes[n.name] = n
+		nodes[n.Name] = n
 	}
 
 	initializers := map[string]*onnx.TensorProto{}
 	for _, t := range graph.Initializer {
-		initializers[t.name] = t
-	}
-
-	inputs := map[string]*onnx.ValueInfoProto{}
-	for _, i := range graph.Input {
-		inputs[i.name] = i
-	}
-
-	outputs := map[string]*onnx.ValueInfoProto{}
-	for _, o := range graph.Output {
-		outputs[o.name] = o
+		initializers[t.Name] = t
 	}
 
 	return &Onnx{
-		irVersion: model.GetIrVersion(),
-		model,
-		graph,
-		nodes,
-		initializers,
-		inputs,
-		outputs,
+		irVersion:        model.GetIrVersion(),
+		model:            model,
+		graph:            graph,
+		nodes:            nodes,
+		initializers:     initializers,
 		layerInformation: make(map[string]dllayer.LayerInfo),
 	}, nil
 }

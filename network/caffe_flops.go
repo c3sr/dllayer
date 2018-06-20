@@ -162,6 +162,7 @@ func (c Caffe) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
 				WithField("layer", lyr).
 				Error("unhandeled to input dimension computation")
 		}
+
 		info := layer.LayerInformation(inputDimensions)
 		c.layerInformation[lyr.Name] = info
 		infos[name] = info
