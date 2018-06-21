@@ -1,4 +1,4 @@
-package network
+package caffe
 
 import (
 	"strings"
@@ -223,11 +223,11 @@ func (c Caffe) LayerInformations() []dllayer.LayerInfo {
 
 	var inputDimensions []int64
 	if len(c.InputDim) != 0 {
-		inputDimensions = toInt64Slice(c.InputDim)
+		inputDimensions = dllayer.ToInt64Slice(c.InputDim)
 	} else if len(c.InputShape) != 0 &&
 		c.InputShape[0] != nil &&
 		len(c.InputShape[0].Dim) != 0 {
-		inputDimensions = toInt64Slice(c.InputShape[0].Dim)
+		inputDimensions = dllayer.ToInt64Slice(c.InputShape[0].Dim)
 	}
 
 	if inputDimensions != nil {
@@ -388,7 +388,7 @@ func (c Caffe) mkv1Layer(lyr *caffe.V1LayerParameter) dllayer.Layer {
 }
 
 func mkInput(param *caffe.InputParameter) dllayer.Layer {
-	inputDimensions := toInt64Slice(param.Shape[0].Dim)
+	inputDimensions := dllayer.ToInt64Slice(param.Shape[0].Dim)
 	return &layer.Input{
 		N: inputDimensions[0],
 		C: inputDimensions[1],
@@ -398,7 +398,7 @@ func mkInput(param *caffe.InputParameter) dllayer.Layer {
 }
 
 func mkData(param *caffe.InputParameter) dllayer.Layer {
-	inputDimensions := toInt64Slice(param.Shape[0].Dim)
+	inputDimensions := dllayer.ToInt64Slice(param.Shape[0].Dim)
 	return &layer.Data{
 		N: inputDimensions[0],
 		C: inputDimensions[1],

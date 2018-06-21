@@ -1,4 +1,4 @@
-package network
+package onnx
 
 import (
 	"path/filepath"

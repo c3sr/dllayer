@@ -1,4 +1,4 @@
-package network
+package caffe
 
 import (
 	"path/filepath"

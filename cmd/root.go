@@ -7,7 +7,7 @@ import (
 	"github.com/Unknwon/com"
 	"github.com/pkg/errors"
 	"github.com/rai-project/dlframework"
-	"github.com/rai-project/dllayer/network"
+	"github.com/rai-project/dllayer/caffe"
 	"github.com/spf13/cobra"
 )
 
@@ -100,7 +100,7 @@ var FlopsInfoCmd = &cobra.Command{
 				return errors.Errorf("file %v does not exist", graphPath)
 			}
 
-			net, err := network.NewCaffe(graphPath)
+			net, err := caffe.NewCaffe(graphPath)
 			if err != nil {
 				return err
 			}

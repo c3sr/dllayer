@@ -1,4 +1,4 @@
-package network
+package dllayer
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cast"
 )
 
-// toIntSliceE casts an interface to a []int32 type.
-func toInt32SliceE(i interface{}) ([]int32, error) {
+// ToIntSliceE casts an interface to a []int32 type.
+func ToInt32SliceE(i interface{}) ([]int32, error) {
 	if i == nil {
 		return []int32{}, fmt.Errorf("unable to cast %#v of type %T to []int32", i, i)
 	}
@@ -36,13 +36,13 @@ func toInt32SliceE(i interface{}) ([]int32, error) {
 	}
 }
 
-func toInt32Slice(i interface{}) []int32 {
-	v, _ := toInt32SliceE(i)
+func ToInt32Slice(i interface{}) []int32 {
+	v, _ := ToInt32SliceE(i)
 	return v
 }
 
-// toIntSliceE casts an interface to a []int64 type.
-func toInt64SliceE(i interface{}) ([]int64, error) {
+// ToIntSliceE casts an interface to a []int64 type.
+func ToInt64SliceE(i interface{}) ([]int64, error) {
 	if i == nil {
 		return []int64{}, fmt.Errorf("unable to cast %#v of type %T to []int64", i, i)
 	}
@@ -70,7 +70,7 @@ func toInt64SliceE(i interface{}) ([]int64, error) {
 	}
 }
 
-func toInt64Slice(i interface{}) []int64 {
-	v, _ := toInt64SliceE(i)
+func ToInt64Slice(i interface{}) []int64 {
+	v, _ := ToInt64SliceE(i)
 	return v
 }

@@ -1,4 +1,4 @@
-package network
+package caffe
 
 import (
 	"github.com/rai-project/config"
@@ -12,6 +12,6 @@ var (
 
 func init() {
 	config.AfterInit(func() {
-		log = logger.New().WithField("pkg", "dllayer/network")
+		log = logger.New().WithField("pkg", "dllayer/network/caffe")
 	})
 }

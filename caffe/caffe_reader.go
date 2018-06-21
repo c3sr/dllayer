@@ -1,4 +1,4 @@
-package network
+package caffe
 
 import (
 	"github.com/rai-project/caffe"
