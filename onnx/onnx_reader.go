@@ -6,11 +6,11 @@ import (
 )
 
 type Onnx struct {
-	irVersion        int64
-	producerName     string
-	model            *onnx.ModelProto
-	graph            *onnx.GraphProto
-	nodes            map[string]*onnx.NodeProto
+	*onnx.ModelProto
+	*onnx.GraphProto
+	nodesInputs      map[string]*onnx.ValueInfoProto
+	nodesOutputs     map[string]*onnx.ValueInfoProto
+	values           map[string]*onnx.ValueInfoProto
 	initializers     map[string]*onnx.TensorProto
 	layerInformation map[string]dllayer.LayerInfo
 }
@@ -23,9 +23,15 @@ func NewOnnx(protoFileName string) (*Onnx, error) {
 
 	graph := model.GetGraph()
 
-	nodes := map[string]*onnx.NodeProto{}
+	nodesInputs := map[string]*onnx.ValueInfoProto{}
+	nodesOutputs := map[string]*onnx.ValueInfoProto{}
 	for _, n := range graph.Node {
 		nodes[n.Name] = n
+	}
+
+	values := map[string]*onnx.ValueInfoProto{}
+	for _, v := range graph.ValueInfo {
+		values[v.Name] = v
 	}
 
 	initializers := map[string]*onnx.TensorProto{}

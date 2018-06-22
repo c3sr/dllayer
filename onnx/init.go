@@ -12,6 +12,6 @@ var (
 
 func init() {
 	config.AfterInit(func() {
-		log = logger.New().WithField("pkg", "dllayer/network/onnx")
+		log = logger.New().WithField("pkg", "dllayer/onnx")
 	})
 }

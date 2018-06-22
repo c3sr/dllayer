@@ -250,8 +250,7 @@ func (c Caffe) getParentsInfo(lyr *caffe.LayerParameter) []dllayer.LayerInfo {
 		info, ok := c.layerInformation[name]
 		if !ok {
 			log.WithField("parent_name", name).WithField("layer_name", lyr.Name).Error("cannot find parent of concat layer")
-		}
-		if ok {
+		} else {
 			parentsInfo = append(parentsInfo, info)
 		}
 	}

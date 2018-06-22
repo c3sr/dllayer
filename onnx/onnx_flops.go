@@ -5,7 +5,6 @@ import (
 
 	"github.com/k0kubun/pp"
 	"github.com/rai-project/dllayer"
-	"github.com/rai-project/dllayer/layer"
 	"github.com/rai-project/onnx"
 )
 
@@ -39,41 +38,58 @@ func getDimValues(dims []*onnx.TensorShapeProto_Dimension) []int64 {
 	return ret
 }
 
-// LayerInformations uses the first input
-func (o Onnx) LayerInformations() []dllayer.LayerInfo {
-	inputDimensions := []int64{}
-	inputs := o.graph.GetInput()
-	inputDims := inputs[0].GetType().GetTensorType().GetShape().GetDim()
-
-	if len(inputs) != 0 && inputs[0] != nil && len(inputDims) != 0 {
-		inputDimensions = getDimValues(inputDims)
-		if len(o.nodes) != 0 {
-			return o.layerInformations(inputDimensions)
+func (o Onnx) GetNodeInputs(node *onnx.NodeProto) []*onnx.ValueInfoProto {
+	ret := []*onnx.ValueInfoProto{}
+	for _, name := range node.GetInput() {
+		val, ok := o.values[name]
+		if ok {
+			ret = append(ret, val)
 		}
-	} else {
-		log.Info("no input info for graph", o.graph.GetName())
 	}
 
-	return nil
+	return ret
 }
 
-func (o Onnx) layerInformations(inputDimensions []int64) []dllayer.LayerInfo {
-	res := []dllayer.LayerInfo{}
+func (o Onnx) GetNodeInputDimensions(node *onnx.NodeProto) []int64 {
+	ret := []int64{}
+	inputs := o.GetNodeInputs(node)
+	for _, input := range o.GetNodeInputs(node) {
+		name := input.GetName()
 
-	// The nodes in the graph are sorted topologically
-	for _, node := range o.graph.GetNode() {
-		name := node.GetName()
-		layer := o.mkLayer(node)
-		if layer == nil {
-			pp.Println("failed to create ", node.GetName())
-			return nil
-		}
-		info := layer.LayerInformation(inputDimensions)
-		o.layerInformation[name] = info
-		res = append(res, info)
 	}
 
-	return res
+	return ret
+}
+
+// LayerInformations uses the first input
+func (o Onnx) LayerInformations() []dllayer.LayerInfo {
+	inputs := o.Graph.GetInput()
+	inputDims := inputs[0].GetType().GetTensorType().GetShape().GetDim()
+
+	if len(inputs) == 0 || inputs[0] == nil || len(inputDims) == 0 {
+		log.Info("no input info for graph", o.Graph.GetName())
+		return nil
+	}
+
+	ret := []dllayer.LayerInfo{}
+
+	// The nodes in the graph are sorted topologically
+	for _, node := range o.Graph.GetNode() {
+		name := node.GetName()
+		layer := o.mkLayer(node)
+
+		if layer == nil {
+			pp.Println("failed to create ", name)
+			return nil
+		}
+
+		inputDimensions := o.GetNodeInputDimensions(node)
+		info := layer.LayerInformation(inputDimensions)
+		o.layerInformation[name] = info
+		ret = append(ret, info)
+	}
+
+	return ret
 }
 
 func (o Onnx) mkLayer(node *onnx.NodeProto) dllayer.Layer {
@@ -135,11 +151,12 @@ func (o Onnx) mkLayer(node *onnx.NodeProto) dllayer.Layer {
 }
 
 func mkInput(inputs []string) dllayer.Layer {
-	inputDimensions := toInt64Slice(param.Shape[0].Dim)
-	return &layer.Input{
-		N: inputDimensions[0],
-		C: inputDimensions[1],
-		W: inputDimensions[2],
-		H: inputDimensions[3],
-	}
+	// inputDimensions := dllayer.ToInt64Slice(param.Shape[0].Dim)
+	// return &layer.Input{
+	// 	N: inputDimensions[0],
+	// 	C: inputDimensions[1],
+	// 	W: inputDimensions[2],
+	// 	H: inputDimensions[3],
+	// }
+	return nil
 }
