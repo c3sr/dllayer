@@ -498,12 +498,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/rai-project/onnx"
-  packages = ["."]
-  revision = "869983b2ed7aba2d59bd0bf63f4bba7867f6f9de"
-
-[[projects]]
-  branch = "master"
   name = "github.com/rai-project/tracer"
   packages = [
     ".",
@@ -587,10 +581,10 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
-  version = "v0.0.3"
+  revision = "1e58aa3361fd650121dceeedc399e7189c05674a"
 
 [[projects]]
   branch = "master"
@@ -832,6 +826,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "decc3a6bcbeacca683a00b9f90a9166e0774b19949b131bee58f7f3fa0547a30"
+  inputs-digest = "a4fa33f445f23bb1d51d72ba323e599a36cbfe76083793b945c8a4d1d4353b0e"
   solver-name = "gps-cdcl"
   solver-version = 1
