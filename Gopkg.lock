@@ -441,10 +441,10 @@
   revision = "deb7e58459467392822a2822f2e193f9ccfdd68f"
 
 [[projects]]
+  branch = "master"
   name = "github.com/rai-project/caffe"
   packages = ["."]
-  revision = "a011cd7cb8ba73df90e509678b066358d7887018"
-  version = "v0.2.22"
+  revision = "8b331d4cb719c7ab70ad5bae9a1dca8eda3481f4"
 
 [[projects]]
   branch = "master"
@@ -826,6 +826,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a4fa33f445f23bb1d51d72ba323e599a36cbfe76083793b945c8a4d1d4353b0e"
+  inputs-digest = "695c92429ea4ab42025f21fa5c9489888598619b597245eca3b10fbb26878ed5"
   solver-name = "gps-cdcl"
   solver-version = 1
