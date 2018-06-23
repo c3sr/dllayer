@@ -220,6 +220,7 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/golang/protobuf"
   packages = [
     "jsonpb",
@@ -231,8 +232,7 @@
     "ptypes/struct",
     "ptypes/timestamp"
   ]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "9eb2c01ac278a5d89ce4b2be68fe4500955d8179"
 
 [[projects]]
   branch = "master"
@@ -317,6 +317,17 @@
   packages = ["."]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mailru/easyjson"
+  packages = [
+    ".",
+    "buffer",
+    "jlexer",
+    "jwriter"
+  ]
+  revision = "3fdea8d05856a0c8df22ed4bc71b3219245e4485"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -453,14 +464,14 @@
   revision = "c84109ab2515e922a25930ea437d20d2e86d1840"
 
 [[projects]]
+  branch = "master"
   name = "github.com/rai-project/dlframework"
   packages = [
     ".",
     "framework",
     "framework/cmd"
   ]
-  revision = "e4ddc9cfae4213267e8b9382846129d7cc30be25"
-  version = "v0.2.18"
+  revision = "bd730dc569d606032a920e134f94e9e4f6e6f327"
 
 [[projects]]
   branch = "master"
@@ -492,9 +503,21 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/rai-project/nvidia-smi"
+  packages = ["."]
+  revision = "484ec7354c5b4045169aa6546fc0fbfc6417a434"
+
+[[projects]]
+  branch = "master"
   name = "github.com/rai-project/nvml-go"
   packages = ["."]
   revision = "0e9aca10dd005adf793355171158783ff8ad930f"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/rai-project/tegra"
+  packages = ["."]
+  revision = "e67904ef854ae00a55270b7bc2a3a2bd875ee080"
 
 [[projects]]
   branch = "master"
@@ -826,6 +849,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "695c92429ea4ab42025f21fa5c9489888598619b597245eca3b10fbb26878ed5"
+  inputs-digest = "1e36cfcb97579e54576a2dbc2aca00f05dafaa471e5a0a51b108606f4f3a3ff3"
   solver-name = "gps-cdcl"
   solver-version = 1
