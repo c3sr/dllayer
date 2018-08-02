@@ -75,10 +75,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/rai-project/onnx"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/rai-project/tracer"
 
 [[constraint]]
@@ -104,6 +100,10 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/sync"
+
+[[override]]
+  branch = "master"
+  name = "github.com/rai-project/onnx"
 
 [prune]
   go-tests = true
