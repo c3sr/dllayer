@@ -1,3 +1,4 @@
+<!--
 ## Assembly Table
 
 -   <https://github.com/google/syzkaller/blob/master/pkg/ifuzz/insns.go>
@@ -16,3 +17,4 @@
 ## Layers
 
 -   <https://github.com/onnx/onnx/blob/master/onnx/defs/gen_doc.py>
+-->
