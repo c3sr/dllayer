@@ -25,7 +25,7 @@
 #   unused-packages = true
 
 
-ignored = ["github.com/rai-project/dlframework"]
+ignored = ["github.com/rai-project/dlframework", "github.com/rai-project/caffe"]
 
 [[constraint]]
   branch = "master"
@@ -59,7 +59,7 @@ ignored = ["github.com/rai-project/dlframework"]
   name = "github.com/pkg/errors"
   version = "0.8.0"
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/rai-project/caffe"
 
