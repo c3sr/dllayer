@@ -67,6 +67,10 @@ ignored = ["github.com/rai-project/dlframework"]
   branch = "master"
   name = "github.com/rai-project/config"
 
+[[override]]
+  branch = "master"
+  name = "github.com/rai-project/dlframework"
+
 [[constraint]]
   branch = "master"
   name = "github.com/rai-project/logger"

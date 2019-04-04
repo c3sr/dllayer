@@ -507,7 +507,7 @@
     "framework/cmd",
   ]
   pruneopts = "UT"
-  revision = "31a9b95c5b81554dba68b7f3be2dffceaf2df961"
+  revision = "dc34513ceeb9590bc6fba45d6193cc56b5db4f57"
 
 [[projects]]
   branch = "master"
@@ -576,7 +576,7 @@
     "zipkin",
   ]
   pruneopts = "UT"
-  revision = "2cfe1d3b0118203593f867dd14cf28ea363da21a"
+  revision = "e60ac893d13ed11a46aa5056a130e49d82c56872"
 
 [[projects]]
   branch = "master"
@@ -803,7 +803,7 @@
     "webdav/internal/xml",
   ]
   pruneopts = "UT"
-  revision = "b630fd6fe46bcfc98f989005d8b8ec1400e60a6e"
+  revision = "eb5bcb51f2a31c7d5141d810b70815c05d9c9146"
 
 [[projects]]
   branch = "master"
