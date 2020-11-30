@@ -1,8 +1,8 @@
 package caffe
 
 import (
-	"github.com/rai-project/caffe"
-	"github.com/rai-project/dllayer"
+	"github.com/c3sr/caffe"
+	"github.com/c3sr/dllayer"
 )
 
 type Caffe struct {

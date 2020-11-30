@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/rai-project/dllayer"
+	"github.com/c3sr/dllayer"
 )
 
 type layer struct {

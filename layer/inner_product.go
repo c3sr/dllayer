@@ -1,7 +1,7 @@
 package layer
 
 import (
-	"github.com/rai-project/dllayer"
+	"github.com/c3sr/dllayer"
 )
 
 type InnerProduct struct {

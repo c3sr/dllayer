@@ -6,8 +6,8 @@ import (
 
 	"github.com/Unknwon/com"
 	"github.com/pkg/errors"
-	"github.com/rai-project/dlframework"
-	"github.com/rai-project/dllayer/caffe"
+	"github.com/c3sr/dlframework"
+	"github.com/c3sr/dllayer/caffe"
 	"github.com/spf13/cobra"
 )
 
@@ -163,6 +163,6 @@ func init() {
 	FlopsInfoCmd.PersistentFlags().StringVarP(&outputFormat, "format", "f", "automatic", "print format to use")
 
 	goPath = com.GetGOPATHs()[0]
-	raiSrcPath = getSrcPath("github.com/rai-project")
+	raiSrcPath = getSrcPath("github.com/c3sr")
 	mlArcWebAssetsPath = filepath.Join(raiSrcPath, "ml-arc-web", "src", "assets", "data")
 }

@@ -4,7 +4,7 @@ import (
 	"math"
 	"strings"
 
-	"github.com/rai-project/dllayer"
+	"github.com/c3sr/dllayer"
 )
 
 type Pooling struct {

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/rai-project/dlframework"
+	"github.com/c3sr/dlframework"
 )
 
 var (

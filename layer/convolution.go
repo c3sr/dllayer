@@ -3,7 +3,7 @@ package layer
 import (
 	"math"
 
-	"github.com/rai-project/dllayer"
+	"github.com/c3sr/dllayer"
 )
 
 type Convolution struct {

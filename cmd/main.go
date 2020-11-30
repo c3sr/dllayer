@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/rai-project/caffe"
-	"github.com/rai-project/config"
-	"github.com/rai-project/dlframework/framework/cmd"
-	dllayercmd "github.com/rai-project/dllayer/cmd"
+	"github.com/c3sr/caffe"
+	"github.com/c3sr/config"
+	"github.com/c3sr/dlframework/framework/cmd"
+	dllayercmd "github.com/c3sr/dllayer/cmd"
 	"github.com/sirupsen/logrus"
 
-	_ "github.com/rai-project/logger/hooks"
-	_ "github.com/rai-project/tracer/all"
+	_ "github.com/c3sr/logger/hooks"
+	_ "github.com/c3sr/tracer/all"
 )
 
 var (

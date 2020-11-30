@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/k0kubun/pp"
-	"github.com/rai-project/caffe"
-	"github.com/rai-project/dllayer"
-	"github.com/rai-project/dllayer/layer"
+	"github.com/c3sr/caffe"
+	"github.com/c3sr/dllayer"
+	"github.com/c3sr/dllayer/layer"
 
 	toposort "github.com/philopon/go-toposort"
 )
